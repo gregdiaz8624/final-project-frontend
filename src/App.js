@@ -1,26 +1,153 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Switch, Route} from 'react-router-dom'
+import Form from './components/Form'
+import NavBar from './components/NavBar'
+import Home from './components/Home'
+import ProfileContainer from './ProfileComponents/ProfileContainer'
+import ProductContainer from './containers/ProductContainer'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import {withRouter, Redirect} from 'react-router-dom'
+
+
+class App extends React.Component {
+
+  state = {
+
+    user: {
+      id: 0,
+      username: "",
+      orders: []
+    },
+    token: "",
+    products: []
+  }
+
+  componentDidMount(){
+
+  //   if (localStorage.token) {
+
+  //     fetch("http://localhost:4000/persist", {
+  //       headers: {
+  //         "Authorization": `bearer ${localStorage.token}`
+  //       }
+  //     })
+  //     .then(r => r.json())
+  //     .then(this.handleResponse)
+    
+  // }
+
+    fetch("http://localhost:4000/products")
+    .then(r=> r.json())
+    .then((products) => {
+      this.setState({
+        products
+      })
+    })
+  }
+
+
+
+  handleLoginSubmit = (userInfo) => {
+    console.log("Login form has been submitted")
+
+    fetch("http://localhost:4000/login", {
+      method: "POST",
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(userInfo)
+    })
+      .then(r => r.json())
+      .then(this.handleResponse)
+  }
+
+
+  handleRegisterSubmit = (userInfo) => {
+    console.log("Register form has been submitted")
+
+    fetch("http://localhost:4000/users", {
+      method: "POST",
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(userInfo)
+    })
+      .then(r => r.json())
+      .then(this.handleResponse)
+  }
+
+  // logSomeonOut = () => {
+  //   this.setState({
+  //     user: {
+  //       id: 0,
+  //       username: "",
+  //       products: []
+  //     },
+  //     token: ""
+  //   })
+  //   localStorage.clear()
+  // }
+
+
+  handleResponse = (resp) => {
+    if (!resp.message) {
+      localStorage.token = resp.token
+      this.setState({
+        user: resp.user,
+        token: resp.token
+      }, () => {
+        this.props.history.push("/profile")
+      })
+    }
+    else {
+      alert(resp.message)
+    }
+  }
+
+  renderForm = (routerProps) => {
+    if(routerProps.location.pathname === "/login"){
+      return <Form formName="Login Form" handleSubmit={this.handleLoginSubmit}/>
+    } else if (routerProps.location.pathname === "/register") {
+      return <Form formName="Register Form" handleSubmit={this.handleRegisterSubmit}/>
+    }
+  }
+
+  renderProfile = (routerProps) => {
+
+    if (this.state.token) {
+      return <ProfileContainer
+        user={this.state.user}
+        token={this.state.token}
+        
+      />
+    } else {
+      return <Redirect to="/login"/>
+    }
+  }
+
+  render(){
+    return (
+      <div className="App">
+        <NavBar/>
+        <Switch>
+          <Route path="/login" render={ this.renderForm } />
+          <Route path="/register" render={ this.renderForm } />
+          <Route path="/profile" render={ this.renderProfile } />
+          <Route path="/products">
+            <ProductContainer
+              products={this.state.products}
+              user={this.state.user}
+              token={this.state.token}
+            />
+          </Route>
+
+          <Route path="/" exact component={Home} />
+          <Route render={ () => <p>Page not Found</p> } />
+        </Switch>
+      </div>
+    );
+  }
 }
 
-export default App;
+export default withRouter(App)
+
