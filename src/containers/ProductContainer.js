@@ -1,10 +1,10 @@
 import React from 'react';
-// import OrderContainer from './OrderContainer'
-// import MenuContainer from './MenuContainer'
-// import PastOrdersContainer from './PastOrdersContainer'
+import OrderContainer from './OrderContainer'
+import CatalogContainer from './CatalogContainer'
+
 import {withRouter} from 'react-router-dom'
 
-class BurgerContainer extends React.Component {
+class ProductContainer extends React.Component {
 
   state={
     products: []
@@ -22,27 +22,23 @@ class BurgerContainer extends React.Component {
       <div className="container">
 
         <div className="header">
-          <h1 id="heading">Welcome to Good Burger, {this.props.user.username}</h1>
+          <h1 id="heading">Welcome to the GCN store, {this.props.user.username}</h1>
         </div>
-{/* 
+
         <OrderContainer
-          burgers={this.state.burgers}
+          product={this.state.product}
           token={this.props.token}
         />
 
-        <MenuContainer
-          burgers={this.props.burgers}
-          addBurgerToOrder={this.addBurgerToOrder}
+        <CatalogContainer
+          products={this.props.products}
+          addProductToOrder={this.addProductToOrder}
         />
 
-
-        <PastOrdersContainer
-          orders={this.props.user.orders}
-        /> */}
       </div>
     )
   }
 
-}
+} 
 
-export default withRouter(BurgerContainer);
+export default withRouter(ProductContainer);

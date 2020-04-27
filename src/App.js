@@ -3,7 +3,10 @@ import {Switch, Route} from 'react-router-dom'
 import Form from './components/Form'
 import NavBar from './components/NavBar'
 import Home from './components/Home'
+// import Logout from './components/Logout'
 import ProfileContainer from './ProfileComponents/ProfileContainer'
+
+import CatalogContainer from './containers/CatalogContainer'
 import ProductContainer from './containers/ProductContainer'
 
 import {withRouter, Redirect} from 'react-router-dom'
@@ -24,21 +27,21 @@ class App extends React.Component {
 
   componentDidMount(){
 
-  //   if (localStorage.token) {
+    if (localStorage.token) {
 
-  //     fetch("http://localhost:4000/persist", {
-  //       headers: {
-  //         "Authorization": `bearer ${localStorage.token}`
-  //       }
-  //     })
-  //     .then(r => r.json())
-  //     .then(this.handleResponse)
+      fetch("http://localhost:4000/persist", {
+        headers: {
+          "Authorization": `bearer ${localStorage.token}`
+        }
+      })
+      .then(r => r.json())
+      .then(this.handleResponse)
     
-  // }
+  }
 
     fetch("http://localhost:4000/products")
     .then(r=> r.json())
-    .then((products) => {
+    .then((products) => { 
       this.setState({
         products
       })
@@ -76,17 +79,18 @@ class App extends React.Component {
       .then(this.handleResponse)
   }
 
-  // logSomeonOut = () => {
-  //   this.setState({
-  //     user: {
-  //       id: 0,
-  //       username: "",
-  //       products: []
-  //     },
-  //     token: ""
-  //   })
-  //   localStorage.clear()
-  // }
+  handleLogout = () => {
+    this.setState({
+      user: {
+        id: 0,
+        username: "",
+        products: []
+      },
+      token: ""
+    })
+    localStorage.clear()
+  
+  }
 
 
   handleResponse = (resp) => {
@@ -115,9 +119,11 @@ class App extends React.Component {
   renderProfile = (routerProps) => {
 
     if (this.state.token) {
-      return <ProfileContainer
+      return <ProductContainer
+        products={this.state.products}
         user={this.state.user}
         token={this.state.token}
+        addNewOrder={this.addNewOrder}
         
       />
     } else {
@@ -125,14 +131,28 @@ class App extends React.Component {
     }
   }
 
+  addNewOrder = (newlyCreatedOrder) => {
+    let copy = [...this.state.user.orders, newlyCreatedOrder]
+
+    this.setState({
+      user: {
+        ...this.state.user,
+        orders: copy
+      }
+    })
+  }
+
   render(){
     return (
       <div className="App">
-        <NavBar/>
+        
+        <NavBar />
+        {this.state.token && <button className="logout-button" onClick={this.handleLogout}>Log out</button>}
         <Switch>
           <Route path="/login" render={ this.renderForm } />
           <Route path="/register" render={ this.renderForm } />
-          <Route path="/profile" render={ this.renderProfile } />
+          <Route path="/profile" render={ this.renderProfile} />
+          {/* <Route path="/logout" render={this.state.token && this.handleLogout} /> */}
           <Route path="/products">
             <ProductContainer
               products={this.state.products}
@@ -141,7 +161,13 @@ class App extends React.Component {
             />
           </Route>
 
-          <Route path="/" exact component={Home} />
+          <Route path="/" exact >
+          <CatalogContainer
+              products={this.state.products}
+              user={this.state.user}
+              token={this.state.token}
+            />
+          </Route >
           <Route render={ () => <p>Page not Found</p> } />
         </Switch>
       </div>
