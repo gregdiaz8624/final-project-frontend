@@ -3,6 +3,10 @@ import {Switch, Route} from 'react-router-dom'
 import Form from './components/Form'
 import NavBar from './components/NavBar'
 import Home from './components/Home'
+import 'bootstrap/dist/css/bootstrap.css';
+import Card from 'react-bootstrap/Card';
+
+
 // import Logout from './components/Logout'
 import ProfileContainer from './ProfileComponents/ProfileContainer'
 
@@ -36,12 +40,12 @@ class App extends React.Component {
       })
       .then(r => r.json())
       .then(this.handleResponse)
-    
+
   }
 
     fetch("http://localhost:4000/products")
     .then(r=> r.json())
-    .then((products) => { 
+    .then((products) => {
       this.setState({
         products
       })
@@ -89,7 +93,7 @@ class App extends React.Component {
       token: ""
     })
     localStorage.clear()
-  
+
   }
 
 
@@ -124,7 +128,7 @@ class App extends React.Component {
         user={this.state.user}
         token={this.state.token}
         addNewOrder={this.addNewOrder}
-        
+
       />
     } else {
       return <Redirect to="/login"/>
@@ -145,7 +149,7 @@ class App extends React.Component {
   render(){
     return (
       <div className="App">
-        
+
         <NavBar />
         {this.state.token && <button className="logout-button" onClick={this.handleLogout}>Log out</button>}
         <Switch>
@@ -176,4 +180,3 @@ class App extends React.Component {
 }
 
 export default withRouter(App)
-
