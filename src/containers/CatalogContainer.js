@@ -7,7 +7,7 @@ class CatalogContainer extends Component {
     return (
       <div className="catalog">
         <h2>GCN Product Catalog</h2>
-        <div id="product-catalog">
+        <div id="product-catalog" className="product-catalog">
           {
             this.props.products.map(productObj => <Product key={productObj.id} product={productObj} addProductToOrder={this.props.addProductToOrder}/>)
           }

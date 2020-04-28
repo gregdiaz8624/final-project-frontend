@@ -9,6 +9,8 @@ const Product = (props) => {
   }
 
   return (
+
+
     <div className="product">
       <h3 className="product_title">{product.name} - ${product.price}</h3>
         <img src={product.image} alt={product.name}/>
@@ -17,6 +19,7 @@ const Product = (props) => {
         </p>
         <button  className="button" onClick={handleClick}>Add to Order</button>
     </div>
+    
 
   )
 }
