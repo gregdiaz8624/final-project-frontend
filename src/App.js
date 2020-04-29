@@ -8,13 +8,12 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Card from 'react-bootstrap/Card';
 
 
-// import Logout from './components/Logout'
-import ProfileContainer from './ProfileComponents/ProfileContainer'
-
 import CatalogContainer from './containers/CatalogContainer'
 import ProductContainer from './containers/ProductContainer'
 
 import {withRouter, Redirect} from 'react-router-dom'
+import ShippingHeader from './components/ShippingHeader';
+import ProductNavBar from './components/ProductNavBar';
 
 
 class App extends React.Component {
@@ -148,16 +147,18 @@ class App extends React.Component {
   }
 
   render(){
+
     return (
       <div className="App">
 
+        <ShippingHeader />
         <NavBar />
+        <ProductNavBar />
         {this.state.token && <button className="logout-button" onClick={this.handleLogout}>Log out</button>}
         <Switch>
           <Route path="/login" render={ this.renderForm } />
           <Route path="/register" render={ this.renderForm } />
           <Route path="/profile" render={ this.renderProfile} />
-          {/* <Route path="/logout" render={this.state.token && this.handleLogout} /> */}
           <Route path="/products">
             <ProductContainer
               products={this.state.products}
@@ -165,14 +166,22 @@ class App extends React.Component {
               token={this.state.token}
             />
           </Route>
-
+       
           <Route path="/" exact >
-          <CatalogContainer
+           { localStorage.token ?
+          <ProductContainer
               products={this.state.products}
               user={this.state.user}
               token={this.state.token}
             />
+            :
+          <CatalogContainer
+              products={this.state.products}
+              user={this.state.user}
+              token={this.state.token}
+            />}
           </Route >
+
           <Route render={ () => <p>Page not Found</p> } />
         </Switch>
       </div>

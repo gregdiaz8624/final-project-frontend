@@ -1,6 +1,7 @@
 import React from 'react';
 import OrderContainer from './OrderContainer'
 import CatalogContainer from './CatalogContainer'
+import PastOrderContainer from './PastOrderContainer'
 
 import {withRouter} from 'react-router-dom'
 
@@ -26,13 +27,18 @@ class ProductContainer extends React.Component {
         </div>
 
         <OrderContainer
-          product={this.state.product}
+          products={this.state.products}
           token={this.props.token}
+          addNewOrder={this.props.addNewOrder}
         />
 
         <CatalogContainer
           products={this.props.products}
           addProductToOrder={this.addProductToOrder}
+        />
+
+        <PastOrderContainer
+          orders={this.props.user.orders}
         />
 
       </div>

@@ -2,11 +2,12 @@ import React from 'react';
 import SingleProduct from '../ProfileComponents/SingleProduct'
 
 const OrderContainer = (props) => {
+  // console.log(props)
   let {products} = props
 
-//   let totalSum = products.reduce((acc, product) => {
-//     return acc + product.price
-//   }, 0)
+  let totalSum = products.reduce((acc, product) => {
+    return acc + product.price
+  }, 0)
 
 
   const handleClick = (e) => {
@@ -37,11 +38,11 @@ const OrderContainer = (props) => {
 
   return (
     <div className="order">
-      <h2>Your Orders</h2>
-      {/* <ul id="order-list">
+      <h2>Your Order</h2>
+      <p id="order-list">
         {products.map((product, index) => <SingleProduct key={index} product={product}/>)}
-      </ul>
-      <h3>Total Price: $<span id="total">{totalSum}</span></h3> */}
+      </p>
+      <h3>Total Price: $<span id="total">{totalSum}</span></h3>
       <button onClick={handleClick} className="submit">Place an Order </button>
     </div>
   )

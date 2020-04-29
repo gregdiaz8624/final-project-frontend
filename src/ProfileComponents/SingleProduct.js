@@ -4,8 +4,9 @@ const SingularProduct = (props) => {
 
   return (
     <li>
-      {props.product.name}
+      {props.product.name} 
     </li>
+    
   )
 }
 
