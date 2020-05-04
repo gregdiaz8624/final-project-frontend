@@ -27,14 +27,6 @@ code {
   font-size: 5rem;
 } */
 
-form {
-  text-align: center;
-  margin-top: 3rem;
-}
-
-label {
-  font-size: 1.5rem;
-}
 
 input, label {
   display: block;
@@ -43,8 +35,6 @@ input, label {
 
 input[type="submit"]{
   width: 10rem;
-  margin-top: 2rem;
-  height: 1.5rem;
 }
 
 ol {
