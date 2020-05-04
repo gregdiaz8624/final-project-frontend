@@ -1,41 +1,48 @@
 import React from 'react';
 import OrderContainer from './OrderContainer'
 import CatalogContainer from './CatalogContainer'
+import PastOrderContainer from './PastOrderContainer'
 
 import {withRouter} from 'react-router-dom'
 
 class ProductContainer extends React.Component {
 
-  state={
-    products: []
-  }
-
-  addProductToOrder = (productObj) => {
-    const newProducts = [...this.state.products, productObj]
-    this.setState({
-      products: newProducts
-    })
-  }
-
   render(){
+    
     return(
-      <div className="container">
+      <>{ localStorage.token ?
+       <div className="container">
+        
+          <div className="header">
+            <h1 id="heading">Welcome to the GCN store, {this.props.user.username}</h1>
+          </div>
 
-        <div className="header">
-          <h1 id="heading">Welcome to the GCN store, {this.props.user.username}</h1>
-        </div>
+          <OrderContainer
+            products={this.props.cart}
+            token={this.props.token}
+            addNewOrder={this.props.addNewOrder}
+          />
 
-        <OrderContainer
-          product={this.state.product}
-          token={this.props.token}
-        />
+          <CatalogContainer
+            products={this.props.products}
+            addProductToOrder={this.props.addProductToOrder}
+          />
 
-        <CatalogContainer
-          products={this.props.products}
-          addProductToOrder={this.addProductToOrder}
-        />
+          <PastOrderContainer
+            orders={this.props.user.orders}
+          />
+          
+       </div>
+       :
+       <div>
+         <CatalogContainer
+            products={this.props.products}
+            addProductToOrder={this.props.addProductToOrder}
+          />
 
-      </div>
+       </div>
+        }
+      </>
     )
   }
 
