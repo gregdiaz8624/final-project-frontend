@@ -3,9 +3,8 @@ import {Switch, Route} from 'react-router-dom'
 import Form from './components/Form'
 import NavBar from './components/NavBar'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Home from './components/Home'
 import 'bootstrap/dist/css/bootstrap.css';
-import Card from 'react-bootstrap/Card';
+
 
 
 import CatalogContainer from './containers/CatalogContainer'
@@ -23,10 +22,12 @@ class App extends React.Component {
     user: {
       id: 0,
       username: "",
-      orders: []
+      orders: [],
+      
     },
     token: "",
-    products: []
+    products: [],
+    cart:[]
   }
 
   componentDidMount(){
@@ -47,7 +48,7 @@ class App extends React.Component {
     .then(r=> r.json())
     .then((products) => {
       this.setState({
-        products
+       products
       })
     })
   }
@@ -120,29 +121,135 @@ class App extends React.Component {
     }
   }
 
-  renderProfile = (routerProps) => {
-
+  renderProfile = () => {
     if (this.state.token) {
       return <ProductContainer
         products={this.state.products}
         user={this.state.user}
         token={this.state.token}
         addNewOrder={this.addNewOrder}
-
+        addProductToOrder={this.addProductToOrder}
+        cart={this.state.cart}
       />
     } else {
       return <Redirect to="/login"/>
     }
   }
 
+  // this might want to go in componentDidMount or have its invocation in componentDidMount to avoid 
+  // issues with dtrying to read from state before the initial get fetch comes back with product data
+
+
+  returnGCNCastelliKit = () => {
+    let filteredArray = this.state.products
+
+      let accessoriesArray = filteredArray.filter( productPOJO => {
+        return productPOJO.category === 'new gcn castelli kit'
+      })
+      return accessoriesArray
+    }  
+
+  returnIndoorTrainging = () => {
+    let filteredArray = this.state.products
+  
+       let accessoriesArray = filteredArray.filter( productPOJO => {
+        return productPOJO.category === 'indoor training'
+       })
+      return accessoriesArray
+    }  
+
+  returnAccessories = () => {
+    let filteredArray = this.state.products
+
+      let accessoriesArray = filteredArray.filter( productPOJO => {
+        return productPOJO.category === 'accessories'
+      })
+      return accessoriesArray
+    }  
+  
+
+  returnCasualClothing = () => {
+    let filteredArray = this.state.products
+
+      let accessoriesArray = filteredArray.filter( productPOJO => {
+        return productPOJO.category === 'casual clothing'
+      })
+      return accessoriesArray
+    }  
+  
+
+  renderProductByCategory = (routerProps) =>{
+    if (routerProps.location.pathname === "/gcn-castelli-kit"){
+      return <ProductContainer
+      products={this.returnGCNCastelliKit()}
+      user={this.state.user}
+      token={this.state.token}
+      addProductToOrder={this.addProductToOrder}
+      cart={this.state.cart}
+      addNewOrder={this.addNewOrder}
+    />
+    } else if (routerProps.location.pathname === "/indoor-training") {
+      return <ProductContainer
+      products={this.returnIndoorTrainging()}
+      user={this.state.user}
+      token={this.state.token}
+      addProductToOrder={this.addProductToOrder}
+      cart={this.state.cart}
+      addNewOrder={this.addNewOrder}
+    />
+    } else if (routerProps.location.pathname === "/team-kit") {
+      return <ProductContainer
+      products={this.returnGCNCastelliKit()}
+      user={this.state.user}
+      token={this.state.token}
+      addProductToOrder={this.addProductToOrder}
+      cart={this.state.cart}
+      addNewOrder={this.addNewOrder}
+    />
+    } else if (routerProps.location.pathname === "/casual-clothing") {
+      return         <ProductContainer
+      products={this.returnCasualClothing()}
+      user={this.state.user}
+      token={this.state.token}
+      addProductToOrder={this.addProductToOrder}
+      cart={this.state.cart}
+      addNewOrder={this.addNewOrder}
+    />
+    } else if (routerProps.location.pathname === "/accessories") {
+      return         <ProductContainer
+      products={this.returnAccessories()}
+      user={this.state.user}
+      token={this.state.token}
+      addProductToOrder={this.addProductToOrder}
+      cart={this.state.cart}
+      addNewOrder={this.addNewOrder}
+    />
+    }
+  }
+
+
   addNewOrder = (newlyCreatedOrder) => {
+    if (this.state.cart.length == 0 ){
+      alert ("Cart is Empty")
+      return 
+    }
     let copy = [...this.state.user.orders, newlyCreatedOrder]
 
     this.setState({
       user: {
         ...this.state.user,
         orders: copy
-      }
+      },
+      cart:[]
+
+    })
+  }
+
+  addProductToOrder = (productObj) => {
+    const newProducts = [...this.state.cart, productObj]
+    this.setState({
+      cart: newProducts
+
     })
   }
 
@@ -152,27 +259,46 @@ class App extends React.Component {
       <div className="App">
 
         <ShippingHeader />
-        <NavBar />
+        <NavBar handleLogout={this.handleLogout} />
         <ProductNavBar />
-        {this.state.token && <button className="logout-button" onClick={this.handleLogout}>Log out</button>}
+        {/* {this.state.token && <button className="logout-button" onClick={this.handleLogout}>Log out</button>} */}
         <Switch>
+        
           <Route path="/login" render={ this.renderForm } />
+          {/* <Route path="/logout" render={ this.handleLogout}  onClick={this.handleLogout} /> */}
           <Route path="/register" render={ this.renderForm } />
           <Route path="/profile" render={ this.renderProfile} />
-          <Route path="/products">
-            <ProductContainer
+          <Route path="/gcn-castelli-kit" render={this.renderProductByCategory} />
+          <Route path="/indoor-training" render={this.renderProductByCategory} />
+          <Route path="/team-kit" render={this.renderProductByCategory} />
+          <Route path="/casual-clothing" render={this.renderProductByCategory} />
+          <Route path="/accessories" render={this.renderProductByCategory} />
+          {/* <Route path="/gcn-club" >
+          { localStorage.token ?
+          <ProductContainer
               products={this.state.products}
               user={this.state.user}
               token={this.state.token}
+              addProductToOrder={this.addProductToOrder}
+              cart={this.state.cart}
+              addNewOrder={this.addNewOrder}
             />
-          </Route>
-       
+            :
+          <CatalogContainer
+              products={this.state.products}
+              user={this.state.user}
+              token={this.state.token}
+            />}
+          </Route> */}
           <Route path="/" exact >
            { localStorage.token ?
           <ProductContainer
               products={this.state.products}
               user={this.state.user}
               token={this.state.token}
+              addProductToOrder={this.addProductToOrder}
+              cart={this.state.cart}
+              addNewOrder={this.addNewOrder}
             />
             :
           <CatalogContainer
@@ -181,7 +307,6 @@ class App extends React.Component {
               token={this.state.token}
             />}
           </Route >
-
           <Route render={ () => <p>Page not Found</p> } />
         </Switch>
       </div>

@@ -4,6 +4,7 @@ import Product from '../ProfileComponents/Product'
 class CatalogContainer extends Component {
 
   render() {
+    // console.log(this.props)
     return (
       <div className="catalog">
         <h1 className="my-4">GCN Catalog</h1>

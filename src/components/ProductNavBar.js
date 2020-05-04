@@ -20,9 +20,9 @@ const ProductNavBar = () => {
       <li>
         <NavLink to="/accessories">ACCESSORIES</NavLink>
       </li>
-      <li>
+      {/* <li>
         <NavLink to="/gcn-club">GCN CLUB</NavLink>
-      </li>
+      </li> */}
      
     </ul>
   )

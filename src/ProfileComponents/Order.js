@@ -15,7 +15,7 @@ class Order extends React.Component{
   }
 
   render(){
-    console.log(this.props.order.product_orders)
+  
     return (
       <div className="card" >
         <h4 onClick={this.handleClick}>{

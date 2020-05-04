@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Product = (props) => {
-  console.log(props)
+  
   let {product} = props
   
 

@@ -2,7 +2,7 @@ import React from 'react';
 import SingleProduct from '../ProfileComponents/SingleProduct'
 
 const OrderContainer = (props) => {
-  // console.log(props)
+
   let {products} = props
 
   let totalSum = products.reduce((acc, product) => {
@@ -43,7 +43,7 @@ const OrderContainer = (props) => {
         {products.map((product, index) => <SingleProduct key={index} product={product}/>)}
       </p>
       <h3>Total Price: $<span id="total">{totalSum}</span></h3>
-      <button onClick={handleClick} className="submit">Place an Order </button>
+      <button onClick={handleClick} className="submit"> Place an Order </button>
     </div>
   )
 }
